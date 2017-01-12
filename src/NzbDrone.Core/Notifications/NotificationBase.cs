@@ -23,7 +23,7 @@ namespace NzbDrone.Core.Notifications
 
         public abstract void OnGrab(GrabMessage grabMessage);
         public abstract void OnDownload(DownloadMessage message); 
-        public abstract void OnRename(Series series);
+        public abstract void OnRename(Movie movie);
 
         public virtual bool SupportsOnGrab => true;
         public virtual bool SupportsOnDownload => true;

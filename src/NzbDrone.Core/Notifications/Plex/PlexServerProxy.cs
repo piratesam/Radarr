@@ -128,9 +128,9 @@ namespace NzbDrone.Core.Notifications.Plex
                        .Preferences;
         }
 
-        public int? GetMetadataId(int sectionId, int tvdbId, string language, PlexServerSettings settings)
+        public int? GetMetadataId(int sectionId, int tmdbId, string language, PlexServerSettings settings)
         {
-            var guid = string.Format("com.plexapp.agents.thetvdb://{0}?lang={1}", tvdbId, language);
+            var guid = string.Format("com.plexapp.agents.themoviedb://{0}?lang={1}", tmdbId, language);
             var resource = string.Format("library/sections/{0}/all?guid={1}", sectionId, System.Web.HttpUtility.UrlEncode(guid));
             var request = GetPlexServerRequest(resource, Method.GET, settings);
             var client = GetPlexServerClient(settings);

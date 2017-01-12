@@ -29,24 +29,24 @@ namespace NzbDrone.Core.Notifications.Synology
             {
                 foreach (var oldFile in message.OldFiles)
                 {
-                    var fullPath = Path.Combine(message.Series.Path, oldFile.RelativePath);
+                    var fullPath = Path.Combine(message.Movie.Path, oldFile.RelativePath);
 
                     _indexerProxy.DeleteFile(fullPath);
                 }
 
                 {
-                    var fullPath = Path.Combine(message.Series.Path, message.EpisodeFile.RelativePath);
+                    var fullPath = Path.Combine(message.Movie.Path, message.MovieFile.RelativePath);
 
                     _indexerProxy.AddFile(fullPath);
                 }
             }
         }
 
-        public override void OnRename(Series series)
+        public override void OnRename(Movie movie)
         {
             if (Settings.UpdateLibrary)
             {
-                _indexerProxy.UpdateFolder(series.Path);
+                _indexerProxy.UpdateFolder(movie.Path);
             }
         }
 

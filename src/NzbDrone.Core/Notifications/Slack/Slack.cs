@@ -37,7 +37,7 @@ namespace NzbDrone.Core.Notifications.Slack
                     new Attachment
                     {
                         Fallback = message.Message,
-                        Title = message.Series.Title,
+                        Title = message.Movie.Title,
                         Text = message.Message,
                         Color = "warning"
                     }
@@ -59,7 +59,7 @@ namespace NzbDrone.Core.Notifications.Slack
                     new Attachment
                     {
                         Fallback = message.Message,
-                        Title = message.Series.Title,
+                        Title = message.Movie.Title,
                         Text = message.Message,
                         Color = "good"
                     }
@@ -69,7 +69,7 @@ namespace NzbDrone.Core.Notifications.Slack
             NotifySlack(payload);
         }
 
-        public override void OnRename(Series series)
+        public override void OnRename(Movie movie)
         {
             var payload = new SlackPayload
             {
@@ -80,7 +80,7 @@ namespace NzbDrone.Core.Notifications.Slack
                 {
                     new Attachment
                     {
-                        Title = series.Title,
+                        Title = movie.Title,
                     }
                 }
             };

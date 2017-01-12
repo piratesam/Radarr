@@ -18,19 +18,19 @@ namespace NzbDrone.Core.Notifications.Pushalot
 
         public override void OnGrab(GrabMessage grabMessage)
         {
-            const string title = "Episode Grabbed";
+            const string title = "Movie Grabbed";
 
             _proxy.SendNotification(title, grabMessage.Message, Settings);
         }
 
         public override void OnDownload(DownloadMessage message)
         {
-            const string title = "Episode Downloaded";
+            const string title = "Movie Downloaded";
 
             _proxy.SendNotification(title, message.Message, Settings);
         }
 
-        public override void OnRename(Series series)
+        public override void OnRename(Movie movie)
         {
         }
 

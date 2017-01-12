@@ -30,7 +30,7 @@ namespace NzbDrone.Core.Notifications.Pushover
             _proxy.SendNotification(title, message.Message, Settings);
         }
 
-        public override void OnRename(Series series)
+        public override void OnRename(Movie movie)
         {
         }
 

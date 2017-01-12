@@ -10,7 +10,7 @@ namespace NzbDrone.Core.Notifications.MediaBrowser
     public interface IMediaBrowserService
     {
         void Notify(MediaBrowserSettings settings, string title, string message);
-        void Update(MediaBrowserSettings settings, Series series);
+        void Update(MediaBrowserSettings settings, Movie movie);
         ValidationFailure Test(MediaBrowserSettings settings);
     }
 
@@ -30,9 +30,9 @@ namespace NzbDrone.Core.Notifications.MediaBrowser
             _proxy.Notify(settings, title, message);
         }
 
-        public void Update(MediaBrowserSettings settings, Series series)
+        public void Update(MediaBrowserSettings settings, Movie movie)
         {
-            _proxy.Update(settings, series.TvdbId);
+            _proxy.Update(settings, movie.TmdbId);
         }
 
         public ValidationFailure Test(MediaBrowserSettings settings)
@@ -41,7 +41,7 @@ namespace NzbDrone.Core.Notifications.MediaBrowser
             {
                 _logger.Debug("Testing connection to MediaBrowser: {0}", settings.Address);
 
-                Notify(settings, "Test from Sonarr", "Success! MediaBrowser has been successfully configured!");
+                Notify(settings, "Test from Radarr", "Success! MediaBrowser has been successfully configured!");
             }
             catch (RestException ex)
             {

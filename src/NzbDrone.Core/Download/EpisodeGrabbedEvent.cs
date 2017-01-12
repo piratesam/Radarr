@@ -5,13 +5,14 @@ namespace NzbDrone.Core.Download
 {
     public class EpisodeGrabbedEvent : IEvent
     {
-        public RemoteEpisode Episode { get; private set; }
+        // public RemoteEpisode Episode { get; private set; }
+        public RemoteMovie Movie { get; private set; }
         public string DownloadClient { get; set; }
         public string DownloadId { get; set; }
 
-        public EpisodeGrabbedEvent(RemoteEpisode episode)
+        public EpisodeGrabbedEvent(RemoteMovie movie)
         {
-            Episode = episode;
+            Movie = movie;
         }
     }
 }

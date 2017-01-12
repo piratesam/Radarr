@@ -28,7 +28,7 @@ namespace NzbDrone.Core.Notifications.Xbmc
             _proxy.Notify(settings, title, message);
         }
 
-        public void Update(XbmcSettings settings, Series series)
+        public void Update(XbmcSettings settings, Movie movie)
         {
             if (!settings.AlwaysUpdate)
             {
@@ -42,7 +42,7 @@ namespace NzbDrone.Core.Notifications.Xbmc
                 }
             }
 
-            UpdateLibrary(settings, series);
+            UpdateLibrary(settings, movie);
         }
         
         public void Clean(XbmcSettings settings)
@@ -55,7 +55,7 @@ namespace NzbDrone.Core.Notifications.Xbmc
             return _proxy.GetActivePlayers(settings); 
         }
 
-        public string GetSeriesPath(XbmcSettings settings, Series series)
+        public string GetSeriesPath(XbmcSettings settings, Movie movie)
         {
             var allSeries = _proxy.GetSeries(settings);
 
@@ -67,10 +67,10 @@ namespace NzbDrone.Core.Notifications.Xbmc
 
             var matchingSeries = allSeries.FirstOrDefault(s =>
             {
-                var tvdbId = 0;
-                int.TryParse(s.ImdbNumber, out tvdbId);
+                var tmdbId = 0;
+                int.TryParse(s.ImdbNumber, out tmdbId);
 
-                return tvdbId == series.TvdbId || s.Label == series.Title;
+                return tmdbId == movie.TmdbId || s.Label == movie.Title;
             });
 
             if (matchingSeries != null) return matchingSeries.File;
@@ -78,20 +78,20 @@ namespace NzbDrone.Core.Notifications.Xbmc
             return null;
         }
 
-        private void UpdateLibrary(XbmcSettings settings, Series series)
+        private void UpdateLibrary(XbmcSettings settings, Movie movie)
         {
             try
             {
-                var seriesPath = GetSeriesPath(settings, series);
+                var seriesPath = GetSeriesPath(settings, movie);
 
                 if (seriesPath != null)
                 {
-                    _logger.Debug("Updating series {0} (Path: {1}) on XBMC host: {2}", series, seriesPath, settings.Address);
+                    _logger.Debug("Updating movie {0} (Path: {1}) on XBMC host: {2}", movie, seriesPath, settings.Address);
                 }
 
                 else
                 {
-                    _logger.Debug("Series {0} doesn't exist on XBMC host: {1}, Updating Entire Library", series,
+                    _logger.Debug("Movie {0} doesn't exist on XBMC host: {1}, Updating Entire Library", movie,
                                  settings.Address);
                 }
 

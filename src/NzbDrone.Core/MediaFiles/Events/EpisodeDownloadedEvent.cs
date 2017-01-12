@@ -6,14 +6,14 @@ namespace NzbDrone.Core.MediaFiles.Events
 {
     public class EpisodeDownloadedEvent : IEvent
     {
-        public LocalEpisode Episode { get; private set; }
-        public EpisodeFile EpisodeFile { get; private set; }
-        public List<EpisodeFile> OldFiles { get; private set; }
+        public LocalMovie Movie { get; private set; }
+        public MovieFile MovieFile { get; private set; }
+        public List<MovieFile> OldFiles { get; private set; }
 
-        public EpisodeDownloadedEvent(LocalEpisode episode, EpisodeFile episodeFile, List<EpisodeFile> oldFiles)
+        public EpisodeDownloadedEvent(LocalMovie movie, MovieFile movieFile, List<MovieFile> oldFiles)
         {
-            Episode = episode;
-            EpisodeFile = episodeFile;
+            Movie = movie;
+            MovieFile = movieFile;
             OldFiles = oldFiles;
         }
     }

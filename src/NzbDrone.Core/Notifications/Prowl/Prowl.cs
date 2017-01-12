@@ -31,7 +31,7 @@ namespace NzbDrone.Core.Notifications.Prowl
             _prowlService.SendNotification(title, message.Message, Settings.ApiKey, (NotificationPriority)Settings.Priority);
         }
 
-        public override void OnRename(Series series)
+        public override void OnRename(Movie movie)
         {
         }
 

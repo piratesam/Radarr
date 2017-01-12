@@ -32,7 +32,7 @@ namespace NzbDrone.Core.Notifications.Email
             _emailService.SendEmail(Settings, subject, body);
         }
 
-        public override void OnRename(Series series)
+        public override void OnRename(Movie movie)
         {
         }
 

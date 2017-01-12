@@ -26,48 +26,46 @@ namespace NzbDrone.Core.Notifications
             _logger = logger;
         }
 
-        private string GetMessage(Series series, List<Episode> episodes, QualityModel quality)
+        private string GetMessage(Movie movie, QualityModel quality)
         {
             var qualityString = quality.Quality.ToString();
 
             if (quality.Revision.Version > 1)
             {
-                if (series.SeriesType == SeriesTypes.Anime)
-                {
-                    qualityString += " v" + quality.Revision.Version;
-                }
+                //if (series.SeriesType == SeriesTypes.Anime)
+                //{
+                //    qualityString += " v" + quality.Revision.Version;
+                //}
 
-                else
-                {
-                    qualityString += " Proper";
-                }
+                //else
+                //{
+                qualityString += " Proper";
+                //}
             }
             
-            if (series.SeriesType == SeriesTypes.Daily)
-            {
-                var episode = episodes.First();
+            //if (series.SeriesType == SeriesTypes.Daily)
+            //{
+            //    var episode = episodes.First();
 
-                return string.Format("{0} - {1} - {2} [{3}]",
-                                         series.Title,
-                                         episode.AirDate,
-                                         episode.Title,
-                                         qualityString);
-            }
+            //    return string.Format("{0} - {1} - {2} [{3}]",
+            //                             series.Title,
+            //                             episode.AirDate,
+            //                             episode.Title,
+            //                             qualityString);
+            //}
 
-            var episodeNumbers = string.Concat(episodes.Select(e => e.EpisodeNumber)
-                                                       .Select(i => string.Format("x{0:00}", i)));
+            //var episodeNumbers = string.Concat(episodes.Select(e => e.EpisodeNumber)
+            //                                           .Select(i => string.Format("x{0:00}", i)));
 
-            var episodeTitles = string.Join(" + ", episodes.Select(e => e.Title));
+            //var episodeTitles = string.Join(" + ", episodes.Select(e => e.Title));
 
-            return string.Format("{0} - {1}{2} - {3} [{4}]",
-                                    series.Title,
-                                    episodes.First().SeasonNumber,
-                                    episodeNumbers,
-                                    episodeTitles,
+            return string.Format("{0} ({1}) {2} [{3}]",
+                                    movie.Title,
+                                    movie.Year,
                                     qualityString);
         }
 
-        private bool ShouldHandleSeries(ProviderDefinition definition, Series series)
+        private bool ShouldHandleSeries(ProviderDefinition definition, Movie movie)
         {
             var notificationDefinition = (NotificationDefinition) definition;
 
@@ -77,31 +75,32 @@ namespace NzbDrone.Core.Notifications
                 return true;
             }
 
-            if (notificationDefinition.Tags.Intersect(series.Tags).Any())
+            if (notificationDefinition.Tags.Intersect(movie.Tags).Any())
             {
                 _logger.Debug("Notification and series have one or more matching tags.");
                 return true;
             }
 
             //TODO: this message could be more clear
-            _logger.Debug("{0} does not have any tags that match {1}'s tags", notificationDefinition.Name, series.Title);
+            _logger.Debug("{0} does not have any tags that match {1}'s tags", notificationDefinition.Name, movie.Title);
             return false;
         }
 
         public void Handle(EpisodeGrabbedEvent message)
         {
             var grabMessage = new GrabMessage {
-                Message = GetMessage(message.Episode.Series, message.Episode.Episodes, message.Episode.ParsedEpisodeInfo.Quality),
-                Series = message.Episode.Series,
-                Quality = message.Episode.ParsedEpisodeInfo.Quality,
-                Episode = message.Episode
+                Message = GetMessage(message.Movie.Movie, message.Movie.ParsedMovieInfo.Quality),
+                // Series = message.Episode.Series,
+                Movie = message.Movie.Movie,
+                Quality = message.Movie.ParsedEpisodeInfo.Quality,
+                //Episode = message.Episode
             };
 
             foreach (var notification in _notificationFactory.OnGrabEnabled())
             {
                 try
                 {
-                    if (!ShouldHandleSeries(notification.Definition, message.Episode.Series)) continue;
+                    if (!ShouldHandleSeries(notification.Definition, message.Movie.Movie)) continue;
                     notification.OnGrab(grabMessage);
                 }
 
@@ -115,17 +114,17 @@ namespace NzbDrone.Core.Notifications
         public void Handle(EpisodeDownloadedEvent message)
         {
             var downloadMessage = new DownloadMessage();
-            downloadMessage.Message = GetMessage(message.Episode.Series, message.Episode.Episodes, message.Episode.Quality);
-            downloadMessage.Series = message.Episode.Series;
-            downloadMessage.EpisodeFile = message.EpisodeFile;
+            downloadMessage.Message = GetMessage(message.Movie.Movie, message.Movie.ParsedMovieInfo.Quality);
+            downloadMessage.Movie = message.Movie.Movie;
+            downloadMessage.MovieFile = message.MovieFile;
             downloadMessage.OldFiles = message.OldFiles;
-            downloadMessage.SourcePath = message.Episode.Path;
+            downloadMessage.SourcePath = message.Movie.Path;
 
             foreach (var notification in _notificationFactory.OnDownloadEnabled())
             {
                 try
                 {
-                    if (ShouldHandleSeries(notification.Definition, message.Episode.Series))
+                    if (ShouldHandleSeries(notification.Definition, message.Movie.Movie))
                     {
                         if (downloadMessage.OldFiles.Empty() || ((NotificationDefinition)notification.Definition).OnUpgrade)
                         {
@@ -147,9 +146,9 @@ namespace NzbDrone.Core.Notifications
             {
                 try
                 {
-                    if (ShouldHandleSeries(notification.Definition, message.Series))
+                    if (ShouldHandleSeries(notification.Definition, message.Movie))
                     {
-                        notification.OnRename(message.Series);
+                        notification.OnRename(message.Movie);
                     }
                 }
 

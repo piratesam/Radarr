@@ -31,7 +31,7 @@ namespace NzbDrone.Core.Notifications.NotifyMyAndroid
             _proxy.SendNotification(title, message.Message, Settings.ApiKey, (NotifyMyAndroidPriority)Settings.Priority);
         }
 
-        public override void OnRename(Series series)
+        public override void OnRename(Movie movie)
         {
         }
 
